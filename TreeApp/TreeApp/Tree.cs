@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,43 @@ namespace TreeApp
         public Elem Left;
         public Elem Right;
 
+        public Elem() { }
+        public Elem(string str) 
+        {
+            if (str[0] != '(')
+            {
+                Info = int.Parse(str);
+                return;
+            }
+
+            str = str[1..^1];
+            int k = str.IndexOf(',');
+            Info = int.Parse(str[..k]);
+
+            str = str[(k + 1)..];
+            int l = GetFirstComma(str);
+            if (l != 0)
+                Left = new Elem(str[..l]);
+            str = str[(l + 1)..];
+            if(str != "")
+                Right = new Elem(str);
+        }
+
+        private int GetFirstComma(string s)
+        {
+            int k = 0;
+            for(int i = 0;i<s.Length;i++)
+            {
+
+                if (s[i] == ',' && k == 0)
+                    return i;
+                if (s[i] == '(')
+                    k++;
+                if(s[i] == ')')
+                    k--;
+            }
+            return -1;
+        }
 
         public int Sum()
         {
@@ -49,7 +87,14 @@ namespace TreeApp
     {
         public Elem Root;
 
-        public Tree()
+        public Tree(string str)
+        {
+            if (str == null)
+                return;
+            Root = new Elem(str);
+        }
+                
+         public Tree()
         {
             Root = new Elem()
             {  
